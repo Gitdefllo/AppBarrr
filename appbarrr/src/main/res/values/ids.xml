@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="layout_default_appbarrr" type="id"/>
+    <item name="layout_default_toolbar" type="id"/>
+    <item name="layout_default_expanded" type="id"/>
+    <item name="icon_default_close_navigation" type="id"/>
+</resources>

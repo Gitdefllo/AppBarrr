@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AppBarrr">
+        <!-- Default toolbar layout -->
+        <attr name="toolbarLayout" format="reference" />
+        <!-- Default expanded layout -->
+        <attr name="expandLayout" format="reference" />
+        <!-- Default close icon drawable -->
+        <attr name="closeExpandIcon" format="integer" />
+        <!-- Default duration of expanding animation -->
+        <attr name="animExpandDuration" format="integer" />
+        <!-- Default duration of collapsing animation -->
+        <attr name="animCollapseDuration" format="integer" />
+        <!-- Default content scrim of collapsingtoolbar -->
+        <attr name="contentScrimBar" format="reference" />
+        <!-- Default expanded title style of collapsingtoolbar -->
+        <attr name="toolbarTitleExpandStyle" format="integer" />
+        <!-- Default collapsed title style of collapsingtoolbar -->
+        <attr name="toolbarTitleCollapseStyle" format="integer" />
+    </declare-styleable>
+</resources>

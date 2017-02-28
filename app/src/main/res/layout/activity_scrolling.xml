@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.fllo.appbars.ScrollingActivity">
+
+    <com.fllo.bars.AppBarrr
+        android:id="@+id/app_barrr"
+        android:layout_height="@dimen/app_bar_height"
+        android:layout_width="match_parent"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:toolbarLayout="@layout/toolbar_layout"
+        app:expandLayout="@layout/content_expanding"
+        app:contentScrimBar="?attr/colorPrimary"
+        app:animExpandDuration="300"
+        app:animCollapseDuration="300"
+        app:closeExpandIcon="@drawable/ic_close_white"
+        app:toolbarTitleCollapseStyle="@style/CollapsedTitle"
+        app:toolbarTitleExpandStyle="@style/ExpandedTitle"/>
+
+    <include layout="@layout/content_scrolling" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/app_barrr"
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+</android.support.design.widget.CoordinatorLayout>
