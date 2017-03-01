@@ -30,24 +30,23 @@ import android.widget.ImageView;
  * <p>Created by Fllo (Florent Blot - @Gitdefllo) on 23/02/2017</p>
  *
  * <h3>Usage:</h3>
- * <p>This is an example declaration to use this widget:
+ * <p>This is an example declaration to use this widget:</p>
  * <pre>
  *     &lt;android.support.design.widget.CoordinatorLayout
  *         ...&gt;
  *         &lt;com.fllo.bars.AppBarrr
- *             .../&gt
+ *             .../&gt;
  *         &lt;android.support.v4.widget.NestedScrollView
- *             ...&gt
- *             &ltView ...&gt;
+ *             ...&gt;
+ *             &lt;View ...&gt;
  *         &lt;/android.support.v4.widget.NestedScrollView&gt;
  *         &lt;android.support.design.widget.FloatingActionButton
- *             .../&gt
- *     &lt/android.support.design.widget.CoordinatorLayout&gt;
+ *             .../&gt;
+ *     &lt;/android.support.design.widget.CoordinatorLayout&gt;
  * </pre>
- * </p>
  * <p>Warning: to avoid behavior issues, make sure you declare the AppBarrr as first
  * child of the parent container and followed by a NestedScrollView widget</p>
- * <p>The declaration should be as follows:
+ * <p>The declaration should be as follows:</p>
  * <pre>
  *     &lt;com.fllo.bars.AppBarrr
  *         android:id="@+id/app_barrr"
@@ -59,17 +58,15 @@ import android.widget.ImageView;
  *         app:animExpandDuration="300"
  *         app:animCollapseDuration="300"/&gt;
  * </pre>
- * </p>
  *
  * <h3>Requirements:</h3>
  * <p>The Toolbar and the custom locked layout must be declared. Otherwise, a
  * NullPointerException will occur. The declaration can be set dynamically with
- * {@link #setToolbar(int)} and {@link #setExpandLayout(int)} or by XML attributes:
+ * {@link #setToolbar(int)} and {@link #setExpandLayout(int)} or by XML attributes:</p>
  * <pre>
  * toolbarLayout
  * expandLayout
  * </pre>
- * </p>
  *
  * <h3>Animations:</h3>
  * <p>The expanding and collapsing animations can be set separately. By default the
@@ -77,48 +74,47 @@ import android.widget.ImageView;
  * duration of the expanding animation of the locked layout, whereas
  * {@link #setCollapseDuration(long)} is used for the duration of the collapsing
  * animation of the locked layout. It's also possible to declare it by using the
- * following attributes:
+ * following attributes:</p>
  * <pre>
  * animExpandDuration
  * animCollapseDuration
  * </pre>
- * </p>
  *
  * <h3>CollapsingToolbarLayout:</h3>
  * <p>This library uses the CollapsingToolbarLayout and in order to be customizable,
  * some declarations can be override (only) by XML</p>
- * <p>The {@link android.support.design.R.styleable#CollapsingToolbarLayout_contentScrim
- * android:contentScrim} is replaced by {@link R.styleable#AppBarrr_contentScrimBar
- * android:contentScrimBar} to change the color of the CollapsingToolbarLayout</p>
+ * <p>The android:contentScrim is replaced by android:contentScrimBar to change the
+ * color of the CollapsingToolbarLayout</p>
  * <p>You can use a style to change the default expanding title color, size, etc. with
- * {@link R.styleable#AppBarrr_toolbarTitleExpandStyle android:toolbarTitleExpandStyle}</p>
+ * android:toolbarTitleExpandStyle</p>
  * <p>The same can be used to the collapsing title of the layout as
- * {@link R.styleable#AppBarrr_toolbarTitleCollapseStyle android:toolbarTitleCollapseStyle}</p>
+ * android:toolbarTitleCollapseStyle</p>
  * <pre>
  * contentScrimBar
  * toolbarTitleCollapseStyle
  * toolbarTitleExpandStyle
  * </pre>
- * </p>
  *
  * <h3>Close Icon:</h3>
  * <p>It's possible to display a custom icon at the top start of the layout. It will
  * replace the current navigation icon of the Toolbar. This icon can be set by
  * {@link #setCloseIcon(Drawable)} and is used to close the locked layout. If not set,
- * the layout will not display any icon. This icon can be declared by XML:
+ * the layout will not display any icon. This icon can be declared by XML:</p>
  * <pre>
  * closeExpandIcon
  * </pre>
- * </p>
  *
- * @attr ref R.styleable#AppBarrr_toolbarLayout
- * @attr ref R.styleable#AppBarrr_expandLayout
- * @attr ref R.styleable#AppBarrr_contentScrimBar
- * @attr ref R.styleable#AppBarrr_animExpandDuration
- * @attr ref R.styleable#AppBarrr_animCollapseDuration
- * @attr ref R.styleable#AppBarrr_closeExpandIcon
- * @attr ref R.styleable#AppBarrr_toolbarTitleCollapseStyle
- * @attr ref R.styleable#AppBarrr_toolbarTitleExpandStyle
+ * <h3>References:</h3>
+ * <pre>
+ * R.styleable#AppBarrr_toolbarLayout
+ * R.styleable#AppBarrr_expandLayout
+ * R.styleable#AppBarrr_contentScrimBar
+ * R.styleable#AppBarrr_animExpandDuration
+ * R.styleable#AppBarrr_animCollapseDuration
+ * R.styleable#AppBarrr_closeExpandIcon
+ * R.styleable#AppBarrr_toolbarTitleCollapseStyle
+ * R.styleable#AppBarrr_toolbarTitleExpandStyle
+ * </pre>
  *
  * @see android.support.design.widget.AppBarLayout
  * @see android.support.design.widget.CollapsingToolbarLayout
@@ -295,6 +291,8 @@ public class AppBarrr extends AppBarLayout {
 
     /**
      * Returns the default toolbar
+     *
+     * @return The default toolbar
      */
     public Toolbar getToolbar() {
         return this.mToolbar;
@@ -302,6 +300,8 @@ public class AppBarrr extends AppBarLayout {
 
     /**
      * Sets the default close icon
+     *
+     * @param drawable Drawable resource of icon
      */
     public void setCloseIcon(Drawable drawable) {
         mCloseIcon = new ImageView(activity);
@@ -314,6 +314,8 @@ public class AppBarrr extends AppBarLayout {
 
     /**
      * Returns the default close icon
+     *
+     * @return The imageview of the icon
      */
     public ImageView getCloseIcon() {
         return this.mCloseIcon;
@@ -336,6 +338,8 @@ public class AppBarrr extends AppBarLayout {
 
     /**
      * Returns the default expanded layout
+     *
+     * @return The locked layout
      */
     public View getExpandLayout() {
         return this.mExpandLayout;
@@ -391,6 +395,8 @@ public class AppBarrr extends AppBarLayout {
     /**
      * Sets the current state of expanded layout
      * True if visible, false otherwise
+     *
+     * @param isLocked Boolean of the visible state
      */
     private void setExpandState(boolean isLocked) {
         this.mIsExpanded = isLocked;
@@ -400,7 +406,7 @@ public class AppBarrr extends AppBarLayout {
      * Gets the current state of expanded layout
      * True if visible, false otherwise
      *
-     * @return boolean
+     * @return Boolean of the current state
      */
     public boolean isExpanded() {
         return this.mIsExpanded;
