@@ -24,9 +24,10 @@ import android.widget.ImageView;
 
 /**
  * <h2>AppBarrr</h2>
- * <p>A widget which uses the CollapsingToolbarLayout design and displays a custom locked
+ * <p>A widget which uses the CollapsingToolbarLayout pattern and displays a custom expanded
  * scrollable layout in AppBarLayout</p>
  *
+ * <p>This library is found on Github: https://github.com/Gitdefllo/AppBarrr</p>
  * <p>Created by Fllo (Florent Blot - @Gitdefllo) on 23/02/2017</p>
  *
  * <h3>Usage:</h3>
@@ -34,18 +35,20 @@ import android.widget.ImageView;
  * <pre>
  *     &lt;android.support.design.widget.CoordinatorLayout
  *         ...&gt;
+ *
  *         &lt;com.fllo.bars.AppBarrr
  *             .../&gt;
+ *
  *         &lt;android.support.v4.widget.NestedScrollView
  *             ...&gt;
- *             &lt;View ...&gt;
+ *             &lt;...&gt;
  *         &lt;/android.support.v4.widget.NestedScrollView&gt;
+ *
  *         &lt;android.support.design.widget.FloatingActionButton
  *             .../&gt;
+ *
  *     &lt;/android.support.design.widget.CoordinatorLayout&gt;
  * </pre>
- * <p>Warning: to avoid behavior issues, make sure you declare the AppBarrr as first
- * child of the parent container and followed by a NestedScrollView widget</p>
  * <p>The declaration should be as follows:</p>
  * <pre>
  *     &lt;com.fllo.bars.AppBarrr
@@ -60,9 +63,9 @@ import android.widget.ImageView;
  * </pre>
  *
  * <h3>Requirements:</h3>
- * <p>The Toolbar and the custom locked layout must be declared. Otherwise, a
+ * <p>The Toolbar and the custom expanded layout must be declared. Otherwise, a
  * NullPointerException will occur. The declaration can be set dynamically with
- * {@link #setToolbar(int)} and {@link #setExpandLayout(int)} or by XML attributes:</p>
+ * {@link #setToolbar(int)} and {@link #setExpandLayout(int)} or by attributes:</p>
  * <pre>
  * toolbarLayout
  * expandLayout
@@ -71,9 +74,9 @@ import android.widget.ImageView;
  * <h3>Animations:</h3>
  * <p>The expanding and collapsing animations can be set separately. By default the
  * two animations are setting to 300ms. {@link #setExpandDuration(long)} sets the
- * duration of the expanding animation of the locked layout, whereas
+ * duration of the expanding animation of the expanded layout, whereas
  * {@link #setCollapseDuration(long)} is used for the duration of the collapsing
- * animation of the locked layout. It's also possible to declare it by using the
+ * animation of the expanded layout. It's also possible to declare it by using the
  * following attributes:</p>
  * <pre>
  * animExpandDuration
@@ -82,13 +85,11 @@ import android.widget.ImageView;
  *
  * <h3>CollapsingToolbarLayout:</h3>
  * <p>This library uses the CollapsingToolbarLayout and in order to be customizable,
- * some declarations can be override (only) by XML</p>
- * <p>The android:contentScrim is replaced by android:contentScrimBar to change the
- * color of the CollapsingToolbarLayout</p>
- * <p>You can use a style to change the default expanding title color, size, etc. with
- * android:toolbarTitleExpandStyle</p>
- * <p>The same can be used to the collapsing title of the layout as
- * android:toolbarTitleCollapseStyle</p>
+ * some declarations can be override (only) by XML. The android:contentScrim is replaced
+ * by android:contentScrimBar to change the color of the CollapsingToolbarLayout. You
+ * can use a style to change the default expanding title color, size, etc. with
+ * android:toolbarTitleExpandStyle. The same can be used to the collapsing title of the
+ * layout as android:toolbarTitleCollapseStyle</p>
  * <pre>
  * contentScrimBar
  * toolbarTitleCollapseStyle
@@ -98,7 +99,7 @@ import android.widget.ImageView;
  * <h3>Close Icon:</h3>
  * <p>It's possible to display a custom icon at the top start of the layout. It will
  * replace the current navigation icon of the Toolbar. This icon can be set by
- * {@link #setCloseIcon(Drawable)} and is used to close the locked layout. If not set,
+ * {@link #setCloseIcon(Drawable)} and is used to close the expanded layout. If not set,
  * the layout will not display any icon. This icon can be declared by XML:</p>
  * <pre>
  * closeExpandIcon
@@ -133,7 +134,7 @@ public class AppBarrr extends AppBarLayout {
     private static int TOOLBAR_START_HEIGHT;
 
     /**
-     * Locked layout's minimum height
+     * Expanded layout's minimum height
      */
     private static int LOCKED_LAYOUT_MIN_HEIGHT;
 
@@ -219,6 +220,8 @@ public class AppBarrr extends AppBarLayout {
             if (activity instanceof AppCompatActivity) {
                 ((AppCompatActivity) activity).setSupportActionBar(mToolbar);
             }
+        } else {
+            throw new NullPointerException("The AppBarrr needs a toolbar layout, sets with \"app:toolbarlayout\"");
         }
 
         // close icon (if navigationIcon doesn't exist)
@@ -242,6 +245,8 @@ public class AppBarrr extends AppBarLayout {
             container.addView(mExpandLayout, container.getChildCount());
             // hide the expanded layout by default
             mExpandLayout.setVisibility(View.GONE);
+        } else {
+            throw new NullPointerException("The AppBarrr needs an expand expanded layout, sets with \"app:expandLayout\"");
         }
 
         // anim durations
@@ -396,10 +401,10 @@ public class AppBarrr extends AppBarLayout {
      * Sets the current state of expanded layout
      * True if visible, false otherwise
      *
-     * @param isLocked Boolean of the visible state
+     * @param isExpanded Boolean of the visible state
      */
-    private void setExpandState(boolean isLocked) {
-        this.mIsExpanded = isLocked;
+    private void setExpandState(boolean isExpanded) {
+        this.mIsExpanded = isExpanded;
     }
 
     /**
@@ -424,7 +429,7 @@ public class AppBarrr extends AppBarLayout {
     }
 
     /**
-     * Sets layout params on locked view
+     * Sets layout params on expanded view
      */
     private void setExpandedLayoutParams() {
         // preparing view parameters
@@ -529,7 +534,7 @@ public class AppBarrr extends AppBarLayout {
         // disable nested views
         ViewGroup parent = (ViewGroup) getParent();
         for (int i=0; i<parent.getChildCount()-1; ++i) {
-            View nestedView = parent.getChildAt(1);
+            View nestedView = parent.getChildAt(i);
             if (!(nestedView instanceof AppBarrr)) {
                 nestedView.setVisibility(View.INVISIBLE);
             }
@@ -543,7 +548,7 @@ public class AppBarrr extends AppBarLayout {
         // re-enable nested views
         ViewGroup parent = (ViewGroup) getParent();
         for (int i=0; i<parent.getChildCount()-1; ++i) {
-            View nestedView = parent.getChildAt(1);
+            View nestedView = parent.getChildAt(i);
             if (!(nestedView instanceof AppBarrr)) {
                 nestedView.setVisibility(View.VISIBLE);
             }
@@ -688,12 +693,17 @@ public class AppBarrr extends AppBarLayout {
         if (isExpanded())
             return;
 
-        // prepare elements
-        prepareShowing();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                // prepare elements
+                prepareShowing();
 
-        // expand the widgets
-        setExpandedAndLocked(this, LOCKED_LAYOUT_MIN_HEIGHT);
-        setExpandedAndLocked(mToolbar, LOCKED_LAYOUT_MIN_HEIGHT);
+                // expand the widgets
+                setExpandedAndLocked(AppBarrr.this, LOCKED_LAYOUT_MIN_HEIGHT);
+                setExpandedAndLocked(mToolbar, LOCKED_LAYOUT_MIN_HEIGHT);
+            }
+        });
     }
 
     /**
@@ -722,12 +732,17 @@ public class AppBarrr extends AppBarLayout {
         if (!isExpanded())
             return;
 
-        // prepare elements
-        prepareHiding();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                // prepare elements
+                prepareHiding();
 
-        // animate the height from current to the initial height
-        setCollapsedAndUnexpanded(this, APPBAR_START_HEIGHT);
-        setCollapsedAndUnexpanded(mToolbar, TOOLBAR_START_HEIGHT);
+                // animate the height from current to the initial height
+                setCollapsedAndUnexpanded(AppBarrr.this, APPBAR_START_HEIGHT);
+                setCollapsedAndUnexpanded(mToolbar, TOOLBAR_START_HEIGHT);
+            }
+        });
     }
 
     /**
