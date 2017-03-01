@@ -246,7 +246,7 @@ public class AppBarrr extends AppBarLayout {
             // hide the expanded layout by default
             mExpandLayout.setVisibility(View.GONE);
         } else {
-            throw new NullPointerException("The AppBarrr needs an expand expanded layout, sets with \"app:expandLayout\"");
+            throw new NullPointerException("The AppBarrr needs an expanded layout, sets with \"app:expandLayout\"");
         }
 
         // anim durations
