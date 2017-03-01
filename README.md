@@ -35,21 +35,15 @@ The declaration should be as follows:
 Implementation
 ------
 
-The `ExpandedLayout`, used to lock the screen and to be shown with an extending animation, can support the scrollable widgets as:
-
-```java
-<ScrollView .../>
-<android.support.v4.widget.NestedScrollView .../>
-```
-
-For the `Toolbar`, no need to do this following code in your `Activity`:
+The `ExpandedLayout`, used to lock the screen and to be shown with an extending animation, can support the scrollable widgets as `ScrollView` and `NestedScrollView`.  
+No need to do this following code in your `Activity`:
 
 ```java
 Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 setSupportActionBar(toolbar);
 ```
 
-Since the implementation of the `Toolbar` will take care of it for you.
+Since the implementation of the `Toolbar` in this library will take care of it for you.
 
 Download
 --------
@@ -76,7 +70,7 @@ See the [docs](https://github.com/Gitdefllo/AppBarrr/blob/master/DOCS.md) for mo
 License
 --------
 
-    Copyright 2016 Florent Blot
+    Copyright 2017 Florent Blot
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
