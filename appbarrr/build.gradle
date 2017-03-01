@@ -1,5 +1,10 @@
 apply plugin: 'com.android.library'
 
+Properties props = new Properties()
+props.load(new FileInputStream("local.properties"))
+
+version=props.getProperty("lib.vs")
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -8,7 +13,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
-        versionName "0.0.1"
+        versionName version
     }
 
     buildTypes {
