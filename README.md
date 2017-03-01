@@ -11,7 +11,7 @@ This is an example declaration to use this widget:
 ```java
 <android.support.design.widget.CoordinatorLayout ...>
     <com.fllo.bars.AppBarrr .../>
-    <android.support.v4.widget.NestedScrollView .../>
+    <android.support.v4.widget.NestedScrollView ...>
         <.../>
     </android.support.v4.widget.NestedScrollView>
     <android.support.design.widget.FloatingActionButton .../>
@@ -38,9 +38,8 @@ Implementation
 The `ExpandedLayout`, used to lock the screen and to be shown with an extending animation, can support the scrollable widgets as:
 
 ```java
+<ScrollView .../>
 <android.support.v4.widget.NestedScrollView .../>
-    <.../>
-</android.support.v4.widget.NestedScrollView>
 ```
 
 For the `Toolbar`, no need to do this following code in your `Activity`:
@@ -50,7 +49,7 @@ Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 setSupportActionBar(toolbar);
 ```
 
-Since the implementation of the `Toolbar` by xml will take care of it for you.
+Since the implementation of the `Toolbar` will take care of it for you.
 
 Download
 --------

@@ -23,7 +23,7 @@ Here's an implementation in xml:
 
 **Requirements:**  
 
-The Toolbar and the custom expanded layout must be declared. Otherwise, a `NullPointerException` will occur. The declaration can be set dynamically with `setToolbar(int)` and setExpandLayout(int)` with a resource id (as `R.layout.xxx`) in parameter, or by attributes:  
+The Toolbar and the custom expanded layout must be declared. Otherwise, a `NullPointerException` will occur. The declaration can be set dynamically with `setToolbar(int)` and `setExpandLayout(int)` with a resource id (as `R.layout.xxx`) in parameter, or by attributes:  
 
 ```java
 android:toolbarLayout
@@ -41,8 +41,10 @@ android:animCollapseDuration
 
 **CollapsingToolbarLayout:**  
 
-This library uses the `CollapsingToolbarLayout` and in order to be customizable, some declarations can be override (only) by XML. The `android:contentScrim` is handled
-by `android:contentScrimBar` to change the color of the `CollapsingToolbarLayout`. You can use a style to change the default expanding title color, size, etc. with `android:toolbarTitleExpandStyle`. The same can be used to the collapsing title of the layout as `android:toolbarTitleCollapseStyle`:  
+This library uses the `CollapsingToolbarLayout` and in order to be customizable, some declarations can be handled (only) by xml.  
+The `android:contentScrim` is handled by `android:contentScrimBar` to change the color of the `CollapsingToolbarLayout`.  
+You can use a style to change the default expanding title color, size, etc. with `android:toolbarTitleExpandStyle`.  
+The same can be used to the collapsing title of the layout as `android:toolbarTitleCollapseStyle`:  
 
 ```java
 android:contentScrimBar
@@ -52,7 +54,7 @@ android:toolbarTitleExpandStyle
 
 **Close Icon:**  
 
-It's possible to display a custom icon at the top start of the layout. It will replace the current navigation icon of the `Toolbar`. This icon can be set by `setCloseIcon(Drawable)` and is used to close the expanded layout. If not set, the layout will not display any icon. This icon can be declared by XML:  
+It's possible to display a custom icon at the top start of the layout. It will replace the current navigation icon of the `Toolbar`. This icon can be set by `setCloseIcon(Drawable)` and is used to close the expanded layout. If not set, the layout will not display any icon. This icon can be declared by xml:  
 
 ```java
 android:closeExpandIcon

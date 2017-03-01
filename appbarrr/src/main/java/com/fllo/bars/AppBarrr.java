@@ -85,11 +85,11 @@ import android.widget.ImageView;
  *
  * <h3>CollapsingToolbarLayout:</h3>
  * <p>This library uses the CollapsingToolbarLayout and in order to be customizable,
- * some declarations can be override (only) by XML. The android:contentScrim is replaced
+ * some declarations can be handled (only) by xml. The android:contentScrim is replaced
  * by android:contentScrimBar to change the color of the CollapsingToolbarLayout. You
  * can use a style to change the default expanding title color, size, etc. with
  * android:toolbarTitleExpandStyle. The same can be used to the collapsing title of the
- * layout as android:toolbarTitleCollapseStyle</p>
+ * layout as android:toolbarTitleCollapseStyle:</p>
  * <pre>
  * contentScrimBar
  * toolbarTitleCollapseStyle
@@ -100,7 +100,7 @@ import android.widget.ImageView;
  * <p>It's possible to display a custom icon at the top start of the layout. It will
  * replace the current navigation icon of the Toolbar. This icon can be set by
  * {@link #setCloseIcon(Drawable)} and is used to close the expanded layout. If not set,
- * the layout will not display any icon. This icon can be declared by XML:</p>
+ * the layout will not display any icon. This icon can be declared by xml:</p>
  * <pre>
  * closeExpandIcon
  * </pre>
