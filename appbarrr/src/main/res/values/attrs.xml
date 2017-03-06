@@ -3,19 +3,23 @@
     <declare-styleable name="AppBarrr">
         <!-- Default toolbar layout -->
         <attr name="toolbarLayout" format="reference" />
+        <!-- Close icon drawable -->
+        <attr name="toolbarIconClose" format="integer" />
         <!-- Default expanded layout -->
         <attr name="expandLayout" format="reference" />
-        <!-- Default close icon drawable -->
-        <attr name="closeExpandIcon" format="integer" />
-        <!-- Default duration of expanding animation -->
+        <!-- Max size of expanded layout -->
+        <attr name="expandMaxSize" format="dimension" />
+        <!-- Duration of expanding animation -->
         <attr name="animExpandDuration" format="integer" />
-        <!-- Default duration of collapsing animation -->
+        <!-- Duration of collapsing animation -->
         <attr name="animCollapseDuration" format="integer" />
-        <!-- Default content scrim of collapsingtoolbar -->
+        <!-- Content scrim of collapsingtoolbar -->
         <attr name="contentScrimBar" format="reference" />
-        <!-- Default expanded title style of collapsingtoolbar -->
+        <!-- Expanded title style of collapsingtoolbar -->
         <attr name="toolbarTitleExpandStyle" format="integer" />
-        <!-- Default collapsed title style of collapsingtoolbar -->
+        <!-- Collapsed title style of collapsingtoolbar -->
         <attr name="toolbarTitleCollapseStyle" format="integer" />
+        <!-- Touch outside to hide expanded layout -->
+        <attr name="hideWhenTouchOutside" format="boolean" />
     </declare-styleable>
 </resources>

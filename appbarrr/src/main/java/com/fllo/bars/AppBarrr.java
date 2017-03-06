@@ -62,13 +62,33 @@ import android.widget.ImageView;
  *         app:animCollapseDuration="300"/&gt;
  * </pre>
  *
+ * <h3>Show/Hide:</h3>
+ * <p>You can show the expanded layout by calling {@link #showExpandedLayout()}, whereas
+ * in order to hide it, call {@link #hideExpandedLayout()}. At any time, you can know the
+ * current state of the expanded layout by calling {@link #isExpanded()}.</p>
+ * <p>When the expanded layout is showing, a custom view overlaps the nested views from
+ * the current layout, if the user clicks on it, this will call {@link #hideExpandedLayout()}
+ * by default. If you don't want to hide the expanded layout when the user clicks outside it,
+ * you should declare {@link #hideWhenTouchOutside(boolean)} with 'false' as parameter, or
+ * the following attribute with the value 'false':</p>
+ * <pre>
+ * hideWhenTouchOutside
+ * </pre>
+ *
  * <h3>Requirements:</h3>
- * <p>The Toolbar and the custom expanded layout must be declared. Otherwise, a
- * NullPointerException will occur. The declaration can be set dynamically with
+ * <p>The Toolbar and the custom expanded layout must be declared (otherwise, a
+ * NullPointerException will occur). The declaration can be set dynamically with
  * {@link #setToolbar(int)} and {@link #setExpandLayout(int)} or by attributes:</p>
  * <pre>
  * toolbarLayout
  * expandLayout
+ * </pre>
+ * <p>{@link #setExpandMaxSize(float)} can set the maximum height in portrait mode
+ * of the expanded layout. Its default max height in landscape will be the parent's height
+ * ~less the toolbar's height. The value set in {@link #setExpandMaxSize(float)} will be
+ * use only in portrait. This can also be set by xml with:</p>
+ * <pre>
+ * expandMaxSize
  * </pre>
  *
  * <h3>Animations:</h3>
@@ -96,25 +116,34 @@ import android.widget.ImageView;
  * toolbarTitleExpandStyle
  * </pre>
  *
- * <h3>Close Icon:</h3>
+ * <h3>ToolbarIconClose:</h3>
  * <p>It's possible to display a custom icon at the top start of the layout. It will
  * replace the current navigation icon of the Toolbar. This icon can be set by
  * {@link #setCloseIcon(Drawable)} and is used to close the expanded layout. If not set,
  * the layout will not display any icon. This icon can be declared by xml:</p>
  * <pre>
- * closeExpandIcon
+ * toolbarIconClose
+ * </pre>
+ *
+ * <h3>WindowSoftInputMode:</h3>
+ * <p>If you add EditTexts in the expanded layout, to avoid weird behavior with the
+ * SoftKeyboard, consider to set 'adjustPan' in the Manifest.xml on your Activity:</p>
+ * <pre>
+ * android:windowSoftInputMode="adjustPan"
  * </pre>
  *
  * <h3>References:</h3>
  * <pre>
  * R.styleable#AppBarrr_toolbarLayout
+ * R.styleable#AppBarrr_toolbarIconClose
  * R.styleable#AppBarrr_expandLayout
- * R.styleable#AppBarrr_contentScrimBar
+ * R.styleable#AppBarrr_expandMaxSize
  * R.styleable#AppBarrr_animExpandDuration
  * R.styleable#AppBarrr_animCollapseDuration
- * R.styleable#AppBarrr_closeExpandIcon
+ * R.styleable#AppBarrr_contentScrimBar
  * R.styleable#AppBarrr_toolbarTitleCollapseStyle
  * R.styleable#AppBarrr_toolbarTitleExpandStyle
+ * R.styleable#AppBarrr_hideWhenTouchOutside
  * </pre>
  *
  * @see android.support.design.widget.AppBarLayout
@@ -134,19 +163,9 @@ public class AppBarrr extends AppBarLayout {
     private static int TOOLBAR_START_HEIGHT;
 
     /**
-     * Expanded layout's minimum height
-     */
-    private static int LOCKED_LAYOUT_MIN_HEIGHT;
-
-    /**
      * Default toolbar
      */
     private Toolbar mToolbar;
-
-    /**
-     * Default expanded layout
-     */
-    private View mExpandLayout;
 
     /**
      * Default close icon
@@ -159,9 +178,24 @@ public class AppBarrr extends AppBarLayout {
     private Drawable mUpIcon;
 
     /**
+     * Default expanded layout
+     */
+    private View mExpandLayout;
+
+    /**
+     * Max size height of expanded layout
+     */
+    private int mExpandMaxSize;
+
+    /**
      * Default collapsingtoolbar layout
      */
-    private CollapsingToolbarLayout container;
+    private CollapsingToolbarLayout mContainer;
+
+    /**
+     * Default mask half-transparent layout
+     */
+    private View mMaskView;
 
     /**
      * Default duration of expanding animation
@@ -172,6 +206,12 @@ public class AppBarrr extends AppBarLayout {
      * Default duration of collapsing animation
      */
     private long mCollapseDuration;
+
+    /**
+     * True if the locked view received a click listener to
+     * hide the expanded layout
+     */
+    private boolean mHideWhenTouchOutside = true;
 
     /**
      * True if the expanded layout is visible
@@ -194,18 +234,18 @@ public class AppBarrr extends AppBarLayout {
     public AppBarrr(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
 
-        // current activity context
-        activity = getActivity(getContext());
-
         // set id and save state
         if (getId() == -1)
             setId(R.id.layout_default_appbarrr);
         setSaveEnabled(true);
 
+        // current activity context
+        activity = getActivity(getContext());
+
         // parent container
         ViewGroup parent = inflating();
         // collapsingtoolbar container
-        container = (CollapsingToolbarLayout)
+        mContainer = (CollapsingToolbarLayout)
                 parent.findViewById(R.id.collapsing_barrr);
 
         // custom attributes
@@ -215,7 +255,7 @@ public class AppBarrr extends AppBarLayout {
         // toolbar
         if (a.hasValue(R.styleable.AppBarrr_toolbarLayout)) {
             setToolbar(a.getResourceId(R.styleable.AppBarrr_toolbarLayout, 0));
-            container.addView(mToolbar, container.getChildCount());
+            mContainer.addView(mToolbar, mContainer.getChildCount());
             // associate toolbar with actionbar
             if (activity instanceof AppCompatActivity) {
                 ((AppCompatActivity) activity).setSupportActionBar(mToolbar);
@@ -225,10 +265,10 @@ public class AppBarrr extends AppBarLayout {
         }
 
         // close icon (if navigationIcon doesn't exist)
-        if (a.hasValue(R.styleable.AppBarrr_closeExpandIcon)) {
-            setCloseIcon(a.getDrawable(R.styleable.AppBarrr_closeExpandIcon));
+        if (a.hasValue(R.styleable.AppBarrr_toolbarIconClose)) {
+            setCloseIcon(a.getDrawable(R.styleable.AppBarrr_toolbarIconClose));
             // add icon to layout
-            container.addView(mCloseIcon, container.getChildCount());
+            mContainer.addView(mCloseIcon, mContainer.getChildCount());
             // close expanded layout when close icon is clicked
             mCloseIcon.setOnClickListener(new OnClickListener() {
                 @Override public void onClick(View v) {
@@ -242,11 +282,16 @@ public class AppBarrr extends AppBarLayout {
         // expanded layout
         if (a.hasValue(R.styleable.AppBarrr_expandLayout)) {
             setExpandLayout(a.getResourceId(R.styleable.AppBarrr_expandLayout, 0));
-            container.addView(mExpandLayout, container.getChildCount());
+            mContainer.addView(mExpandLayout, mContainer.getChildCount());
             // hide the expanded layout by default
             mExpandLayout.setVisibility(View.GONE);
         } else {
             throw new NullPointerException("The AppBarrr needs an expanded layout, sets with \"app:expandLayout\"");
+        }
+
+        // expanded layout size
+        if (a.hasValue(R.styleable.AppBarrr_expandMaxSize)) {
+            setExpandMaxSize(a.getDimension(R.styleable.AppBarrr_expandMaxSize, 0.f));
         }
 
         // anim durations
@@ -260,14 +305,19 @@ public class AppBarrr extends AppBarLayout {
 
         // expanded title style
         if (a.hasValue(R.styleable.AppBarrr_toolbarTitleExpandStyle)) {
-            container.setExpandedTitleTextAppearance(
+            mContainer.setExpandedTitleTextAppearance(
                     a.getResourceId(R.styleable.AppBarrr_toolbarTitleExpandStyle, 0));
         }
 
         // collapsed title style
         if (a.hasValue(R.styleable.AppBarrr_toolbarTitleCollapseStyle)) {
-            container.setCollapsedTitleTextAppearance(
+            mContainer.setCollapsedTitleTextAppearance(
                     a.getResourceId(R.styleable.AppBarrr_toolbarTitleCollapseStyle, 0));
+        }
+
+        // hiding expanded layout when the user touches outside
+        if (a.hasValue(R.styleable.AppBarrr_hideWhenTouchOutside)) {
+            hideWhenTouchOutside(a.getBoolean(R.styleable.AppBarrr_hideWhenTouchOutside, true));
         }
 
         // default scroll flags
@@ -285,10 +335,10 @@ public class AppBarrr extends AppBarLayout {
      *
      * @param resId Id of layout resource
      */
-    public void setToolbar(int resId) {
+    private void setToolbar(int resId) {
         mToolbar = (Toolbar) activity
                 .getLayoutInflater()
-                .inflate(resId, container, false);
+                .inflate(resId, mContainer, false);
         if (mToolbar.getId() == -1) {
             mToolbar.setId(R.id.layout_default_toolbar);
         }
@@ -332,10 +382,10 @@ public class AppBarrr extends AppBarLayout {
      *
      * @param resId Id of layout resource
      */
-    public void setExpandLayout(int resId) {
+    private void setExpandLayout(int resId) {
         mExpandLayout = activity
                 .getLayoutInflater()
-                .inflate(resId, container, false);
+                .inflate(resId, mContainer, false);
         if (mExpandLayout.getId() == -1) {
             mExpandLayout.setId(R.id.layout_default_expanded);
         }
@@ -344,10 +394,33 @@ public class AppBarrr extends AppBarLayout {
     /**
      * Returns the default expanded layout
      *
-     * @return The locked layout
+     * @return The locked view
      */
     public View getExpandLayout() {
         return this.mExpandLayout;
+    }
+
+    /**
+     * Sets the custom layout max size
+     *
+     * @param maxSize Max size height of expanded layout
+     */
+    public void setExpandMaxSize(float maxSize) {
+        mExpandMaxSize = (int) maxSize;
+    }
+
+    /**
+     * Gets the custom layout max size
+     *
+     * @return The max size height of expanded layout in portrait
+     * mode or a default size in landscape
+     */
+    public int getExpandMaxSize() {
+        View parent = (View) getParent();
+        if (this.mExpandMaxSize == 0.f || parent.getWidth() > parent.getHeight()) {
+            this.mExpandMaxSize = parent.getHeight() - TOOLBAR_START_HEIGHT;
+        }
+        return this.mExpandMaxSize;
     }
 
     /**
@@ -378,14 +451,14 @@ public class AppBarrr extends AppBarLayout {
     public void setScrollFlags(@LayoutParams.ScrollFlags int flags) {
         AppBarLayout.LayoutParams params =
                 (AppBarLayout.LayoutParams)
-                container.getLayoutParams();
+                mContainer.getLayoutParams();
         // default flags if not set
         if (flags == -1) {
             flags = LayoutParams.SCROLL_FLAG_SCROLL
                     | LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED;
         }
         params.setScrollFlags(flags);
-        container.setLayoutParams(params);
+        mContainer.setLayoutParams(params);
     }
 
     /**
@@ -394,7 +467,24 @@ public class AppBarrr extends AppBarLayout {
      * @param drawable Drawable of content scrim
      */
     public void setContentScrim(Drawable drawable) {
-        container.setContentScrim(drawable);
+        mContainer.setContentScrim(drawable);
+    }
+
+    /**
+     * Sets a click listener to the nested locked view to hide
+     * the expanded layout
+     */
+    public void hideWhenTouchOutside(boolean hideWhenTouchOutside) {
+        mHideWhenTouchOutside = hideWhenTouchOutside;
+    }
+
+    /**
+     * Gets the current state of the nested locked view to hide
+     * the expanded layout
+     * @return Boolean of the state to hide when the user touches outside
+     */
+    public boolean isHidingWhenTouchOutside() {
+        return this.mHideWhenTouchOutside;
     }
 
     /**
@@ -422,10 +512,9 @@ public class AppBarrr extends AppBarLayout {
      * to retrieve the starting states
      */
     private void setInitialHeights() {
+        // set minimum heights
         APPBAR_START_HEIGHT = this.getHeight();
         TOOLBAR_START_HEIGHT = mToolbar.getLayoutParams().height;
-        LOCKED_LAYOUT_MIN_HEIGHT = ((ViewGroup)
-                this.getParent()).getHeight() - TOOLBAR_START_HEIGHT;
     }
 
     /**
@@ -439,6 +528,25 @@ public class AppBarrr extends AppBarLayout {
         params.topMargin = TOOLBAR_START_HEIGHT;
         mExpandLayout.setLayoutParams(params);
         mExpandLayout.setFocusableInTouchMode(true);
+    }
+
+    /**
+     * Sets a mask view in the parent container
+     */
+    private void setMaskView() {
+        ViewGroup parent = (ViewGroup) getParent();
+        mMaskView = activity
+                .getLayoutInflater()
+                .inflate(R.layout.maskview, parent, false);
+        parent.addView(mMaskView);
+        if (isHidingWhenTouchOutside()) {
+            mMaskView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hideExpandedLayout();
+                }
+            });
+        }
     }
 
     /**
@@ -459,8 +567,9 @@ public class AppBarrr extends AppBarLayout {
      * scrollable expanded content future usage
      */
     private void setDefaultTouchEvent() {
-        if (((ViewGroup) getParent()).getChildAt(1) != null) {
-            final View nestedSv = ((ViewGroup) getParent()).getChildAt(1);
+        ViewGroup parent = (ViewGroup) getParent();
+        if (parent.getChildAt(1) != null) {
+            final View nestedSv = parent.getChildAt(1);
             nestedSv.post(new Runnable() {
                 @Override
                 public void run() {
@@ -499,7 +608,8 @@ public class AppBarrr extends AppBarLayout {
     }
 
     /**
-     * Initializes the inner widgets: toolbar and expanded layout
+     * Initializes the inner widgets: toolbar, expanded layout,
+     * close icon, nested locked view, default touch event
      */
     private void initialize() {
         // we need to get the height of the widgets so we need
@@ -510,6 +620,7 @@ public class AppBarrr extends AppBarLayout {
                 setInitialHeights();
                 setCloseIconParams();
                 setExpandedLayoutParams();
+                setMaskView();
                 setDefaultTouchEvent();
             }
         });
@@ -528,30 +639,22 @@ public class AppBarrr extends AppBarLayout {
     }
 
     /**
-     * Disables elements outside the appbarrr
+     * Shows the half-transparent view outside the appbarrr
      */
-    private void disableOutsideViews() {
-        // disable nested views
-        ViewGroup parent = (ViewGroup) getParent();
-        for (int i=0; i<parent.getChildCount()-1; ++i) {
-            View nestedView = parent.getChildAt(i);
-            if (!(nestedView instanceof AppBarrr)) {
-                nestedView.setVisibility(View.INVISIBLE);
-            }
+    private void hideOutsideViews() {
+        // hide other nested views
+        if (mMaskView != null) {
+            mMaskView.setVisibility(View.VISIBLE);
         }
     }
 
     /**
-     * Enables elements outside the appbarrr
+     * Hides the half-transparent view outside the appbarrr
      */
-    private void enableOutsideViews() {
-        // re-enable nested views
-        ViewGroup parent = (ViewGroup) getParent();
-        for (int i=0; i<parent.getChildCount()-1; ++i) {
-            View nestedView = parent.getChildAt(i);
-            if (!(nestedView instanceof AppBarrr)) {
-                nestedView.setVisibility(View.VISIBLE);
-            }
+    private void showOutsideViews() {
+        // show other nested views
+        if (mMaskView != null) {
+            mMaskView.setVisibility(View.GONE);
         }
     }
 
@@ -568,7 +671,8 @@ public class AppBarrr extends AppBarLayout {
                 .setDuration(mExpandDuration);
 
         // SCROLLABLE-HACK: force scrollable content for nested child
-        final boolean forceScrollable = ((ViewGroup) getParent()).getChildAt(1) != null;
+        final ViewGroup parent = (ViewGroup) getParent();
+        final boolean forceScrollable = parent.getChildAt(1) != null;
 
         // the animation expands the widgets
         slideAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -580,7 +684,7 @@ public class AppBarrr extends AppBarLayout {
                 // SCROLLABLE-HACK: scroll up to 1px the nested child
                 // to enable scrollable expanded content
                 if (forceScrollable) {
-                    ((ViewGroup) getParent()).getChildAt(1).setScrollY(1);
+                    parent.getChildAt(1).setScrollY(1);
                 }
             }
         });
@@ -621,13 +725,8 @@ public class AppBarrr extends AppBarLayout {
         // save the current visible state
         setExpandState(true);
 
-        // disable outside views after the animation
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                disableOutsideViews();
-            }
-        }, mExpandDuration);
+        // hide outside views
+        hideOutsideViews();
 
         // hide toolbar's title from actionbar
         if (activity instanceof AppCompatActivity) {
@@ -645,7 +744,7 @@ public class AppBarrr extends AppBarLayout {
         // show the expanded layout
         mExpandLayout.setVisibility(View.VISIBLE);
         // hide the title
-        container.setTitleEnabled(false);
+        mContainer.setTitleEnabled(false);
         // show close icon
         if (mCloseIcon != null) {
             mCloseIcon.setVisibility(View.VISIBLE);
@@ -659,8 +758,8 @@ public class AppBarrr extends AppBarLayout {
         // save the current visible state
         setExpandState(false);
 
-        // enable outside views
-        enableOutsideViews();
+        // show outside views
+        showOutsideViews();
 
         // hide toolbar's title from actionbar
         if (activity instanceof AppCompatActivity) {
@@ -679,7 +778,7 @@ public class AppBarrr extends AppBarLayout {
         // hide the expanded layout
         mExpandLayout.setVisibility(View.GONE);
         // show the title
-        container.setTitleEnabled(true);
+        mContainer.setTitleEnabled(true);
         // hide close icon
         if (mCloseIcon != null) {
             mCloseIcon.setVisibility(View.GONE);
@@ -699,9 +798,12 @@ public class AppBarrr extends AppBarLayout {
                 // prepare elements
                 prepareShowing();
 
+                // get max size
+                int maxHeight = getExpandMaxSize();
+
                 // expand the widgets
-                setExpandedAndLocked(AppBarrr.this, LOCKED_LAYOUT_MIN_HEIGHT);
-                setExpandedAndLocked(mToolbar, LOCKED_LAYOUT_MIN_HEIGHT);
+                setExpandedAndLocked(AppBarrr.this, maxHeight);
+                setExpandedAndLocked(mToolbar, maxHeight);
             }
         });
     }
@@ -717,9 +819,12 @@ public class AppBarrr extends AppBarLayout {
         // prepare elements
         prepareShowing();
 
+        // get max size
+        int maxHeight = getExpandMaxSize();
+
         // expand the widgets
-        setExpandedAndLocked(this, LOCKED_LAYOUT_MIN_HEIGHT);
-        setExpandedAndLocked(mToolbar, LOCKED_LAYOUT_MIN_HEIGHT);
+        setExpandedAndLocked(this, maxHeight);
+        setExpandedAndLocked(mToolbar, maxHeight);
 
         // reset initial duration
         mExpandDuration = tempDuration;
@@ -835,4 +940,6 @@ public class AppBarrr extends AppBarLayout {
             }
         };
     }
+
+
 }
