@@ -6,7 +6,7 @@ A widget which uses the CollapsingToolbarLayout pattern and displays a custom ex
 Usage
 ------
 
-This is an example declaration to use this widget:  
+This is a sample layout using this widget:  
 
 ```java
 <android.support.design.widget.CoordinatorLayout ...>
@@ -32,40 +32,44 @@ The declaration should be as follows:
     app:animCollapseDuration="300"/>
 ```
 
-Implementation
-------
-
-The `ExpandedLayout`, used to lock the screen and to be shown with an extending animation, can support the scrollable widgets as `ScrollView` and `NestedScrollView`.  
-No need to do this following code in your `Activity`:
-
-```java
-Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-setSupportActionBar(toolbar);
-```
-
-Since the implementation of the `Toolbar` in this library will take care of it for you.
+Use `showExpandedLayout()` to show the expanded layout and `hideExpandedLayout()` to retrieve the initial AppBarrr.  
+At any time, you can know the current state of the expanded layout by calling `isExpanded()`.  
 
 Download
 --------
 
 Via gradle
 ```java
-compile 'com.fllo.bars:appbarrr:0.0.2'
+compile 'com.fllo.bars:appbarrr:0.0.3'
 ```
 or maven
 ```xml
 <dependency>
   <groupId>com.fllo.bars</groupId>
   <artifactId>appbarrr</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ```
+
+This library use `appcompat-v7` and `design` from Android Support Library.
+You can exclude them, if you already use it in your project:
+
+```java
+compile('com.fllo.bars:appbarrr:0.0.3') {
+    exclude group: 'com.android.support'
+}
+```
+
+Warnings:
+------
+
+The `ExpandedLayout`, used to lock the screen and to be shown with an extending animation, can support the scrollable widgets as `ScrollView` and `NestedScrollView`.  
+No need to do this following `setSupportActionBar(toolbar)` in your `Activity` since the implementation of the `Toolbar` in this library will take care of it for you.
 
 Documentation
 --------
 
 See the [docs](https://github.com/Gitdefllo/AppBarrr/blob/master/DOCS.md) for more information.
-
 
 License
 --------

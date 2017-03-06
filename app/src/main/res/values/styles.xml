@@ -7,16 +7,19 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
     <style name="CollapsedTitle" parent="@style/TextAppearance.AppCompat.Title">
         <item name="android:textColor">@android:color/white</item>
     </style>
+
     <style name="ExpandedTitle" parent="@style/TextAppearance.AppCompat.Display1">
         <item name="android:textColor">@android:color/white</item>
     </style>
