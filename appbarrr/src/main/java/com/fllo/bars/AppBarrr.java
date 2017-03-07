@@ -634,7 +634,7 @@ public class AppBarrr extends AppBarLayout {
     private ViewGroup inflating() {
         View contentView = activity
                 .getLayoutInflater()
-                .inflate(R.layout.appbarrrlayout, this, true);
+                .inflate(R.layout.appbarrrview, this, true);
         return (ViewGroup) contentView;
     }
 
