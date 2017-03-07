@@ -3,6 +3,13 @@ AppBarrr
 
 A widget which uses the CollapsingToolbarLayout pattern and displays a custom expanded scrollable layout in AppBarLayout
 
+<table>
+<tr>
+<td><img src="https://github.com/Gitdefllo/AppBarrr/blob/master/app/docs/sample-1.gif" /></td>
+<td><img src="https://github.com/Gitdefllo/AppBarrr/blob/master/app/docs/sample-2.gif" /></td>
+</tr>
+</table>
+
 Usage
 ------
 
