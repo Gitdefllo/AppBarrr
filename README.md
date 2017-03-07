@@ -40,14 +40,14 @@ Download
 
 Via gradle
 ```java
-compile 'com.fllo.bars:appbarrr:0.0.3'
+compile 'com.fllo.bars:appbarrr:0.0.4'
 ```
 or maven
 ```xml
 <dependency>
   <groupId>com.fllo.bars</groupId>
   <artifactId>appbarrr</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
 </dependency>
 ```
 
@@ -55,7 +55,7 @@ This library use `appcompat-v7` and `design` from Android Support Library.
 You can exclude them, if you already use it in your project:
 
 ```java
-compile('com.fllo.bars:appbarrr:0.0.3') {
+compile('com.fllo.bars:appbarrr:0.0.4') {
     exclude group: 'com.android.support'
 }
 ```

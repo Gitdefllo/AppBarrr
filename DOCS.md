@@ -8,22 +8,24 @@ Here's a full implementation in xml:
 ```java
 <com.fllo.bars.AppBarrr
     android:id="@+id/app_barrr"
-    android:layout_height="@dimen/app_bar_height"
     android:layout_width="match_parent"
+    android:layout_height="180dp"
     android:theme="@style/AppTheme.AppBarOverlay"
     app:toolbarLayout="@layout/toolbar_layout"
+    app:toolbarIconClose="@drawable/ic_close_white"
     app:expandLayout="@layout/content_expanding"
+    app:expandMaxSize="450dp"
+    app:animExpandDuration="150"
+    app:animCollapseDuration="150"
     app:contentScrimBar="?attr/colorPrimary"
-    app:animExpandDuration="300"
-    app:animCollapseDuration="300"
-    app:closeExpandIcon="@drawable/ic_close_white"
     app:toolbarTitleCollapseStyle="@style/CollapsedTitle"
-    app:toolbarTitleExpandStyle="@style/ExpandedTitle"/>
+    app:toolbarTitleExpandStyle="@style/ExpandedTitle"
+    app:hideWhenTouchOutside="true"/>
 ```
 
 **Show/Hide:**
 
-Call `showExpandedLayout()` to show the expanded layout, whereas in order to hide it, call `hideExpandedLayout()`. At any time, you can know the current state of the expanded layout by calling `isExpanded()`. When the expanded layout is showing, a custom view overlaps the nested views from the current layout, if the user clicks on it, this will call `hideExpandedLayout()` by default. If you don't want to hide the expanded layout when the user clicks outside it, you should declare `hideWhenTouchOutside(false)`, or the following attribute: 
+Call `showExpandedLayout()` to show the expanded layout, whereas in order to hide it, call `hideExpandedLayout()`. At any time, you can know the current state of the expanded layout by calling `isExpanded()`. By default, when the expanded layout is showing, a custom view overlaps the nested views from the current layout, if the user clicks on it, this will call `hideExpandedLayout()`. If you don't want this behavior, you should declare `hideWhenTouchOutside(false)`, or the following attribute: 
 
 ```java
 app:hideWhenTouchOutside="false"
@@ -31,14 +33,14 @@ app:hideWhenTouchOutside="false"
 
 **Requirements:**  
 
-The Toolbar and the custom expanded layout must be declared. Otherwise, a `NullPointerException` will occur. The declaration can be set dynamically with `setToolbar(int)` and `setExpandLayout(int)` with a resource id (as `R.layout.xxx`) in parameter, or by attributes:  
+The Toolbar and the custom expanded layout must be declared. Otherwise, a `NullPointerException` will occur. The declaration have to be set with these attributes:  
 
 ```java
 app:toolbarLayout="@layout/toolbar"
 app:expandLayout="@layout/customlayout"
 ```
 
-`setExpandMaxSize(float)` can set the maximum height in portrait mode of the expanded layout. Its default max height in landscape will be the parent's height ~less the toolbar's height. The value set in `setExpandMaxSize(float)` will be use only in portrait. This can also be set by xml with: 
+`setExpandMaxSize(float)` can set the maximum height of the expanded layout. Its default max size will be the parent's height ~less the toolbar's height. The value set in `setExpandMaxSize(float)` gets the default value if the max size is larger than the parent. This can also be set by xml with: 
 
 ```java
 app:expandMaxSize="520dp"
