@@ -539,14 +539,6 @@ public class AppBarrr extends AppBarLayout {
                 .getLayoutInflater()
                 .inflate(R.layout.maskview, parent, false);
         parent.addView(mMaskView);
-        if (isHidingWhenTouchOutside()) {
-            mMaskView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    hideExpandedLayout();
-                }
-            });
-        }
     }
 
     /**
@@ -645,6 +637,14 @@ public class AppBarrr extends AppBarLayout {
         // hide other nested views
         if (mMaskView != null) {
             mMaskView.setVisibility(View.VISIBLE);
+            if (isHidingWhenTouchOutside()) {
+                mMaskView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        hideExpandedLayout();
+                    }
+                });
+            }
         }
     }
 
@@ -655,6 +655,9 @@ public class AppBarrr extends AppBarLayout {
         // show other nested views
         if (mMaskView != null) {
             mMaskView.setVisibility(View.GONE);
+            if (isHidingWhenTouchOutside()) {
+                mMaskView.setOnClickListener(null);
+            }
         }
     }
 
@@ -941,5 +944,22 @@ public class AppBarrr extends AppBarLayout {
         };
     }
 
-
+    @Override
+    public void onDetachedFromWindow() {
+        activity = null;
+        mContainer = null;
+        mExpandLayout = null;
+        mToolbar = null;
+        mMaskView = null;
+        mCloseIcon = null;
+        mUpIcon = null;
+        APPBAR_START_HEIGHT = 0;
+        TOOLBAR_START_HEIGHT = 0;
+        mExpandMaxSize = 0;
+        mExpandDuration = 0;
+        mCollapseDuration = 0;
+        mHideWhenTouchOutside = false;
+        mIsExpanded = false;
+        super.onDetachedFromWindow();
+    }
 }
