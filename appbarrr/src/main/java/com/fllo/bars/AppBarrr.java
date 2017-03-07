@@ -412,12 +412,12 @@ public class AppBarrr extends AppBarLayout {
     /**
      * Gets the custom layout max size
      *
-     * @return The max size height of expanded layout in portrait
-     * mode or a default size in landscape
+     * @return The max size height of expanded layout provides by xml
+     * or a default size if the max size is larger than the parent
      */
     public int getExpandMaxSize() {
         View parent = (View) getParent();
-        if (this.mExpandMaxSize == 0.f || parent.getWidth() > parent.getHeight()) {
+        if (this.mExpandMaxSize == 0.f || this.mExpandMaxSize > parent.getHeight()) {
             this.mExpandMaxSize = parent.getHeight() - TOOLBAR_START_HEIGHT;
         }
         return this.mExpandMaxSize;

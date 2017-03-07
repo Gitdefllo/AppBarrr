@@ -10,13 +10,13 @@
 
     <com.fllo.bars.AppBarrr
         android:id="@+id/app_barrr"
-        android:layout_height="@dimen/app_bar_height"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:toolbarLayout="@layout/toolbar_layout"
         app:toolbarIconClose="@drawable/ic_close_white"
         app:expandLayout="@layout/content_expanding"
-        app:expandMaxSize="550dp"
+        app:expandMaxSize="450dp"
         app:animExpandDuration="150"
         app:animCollapseDuration="150"
         app:contentScrimBar="?attr/colorPrimary"
