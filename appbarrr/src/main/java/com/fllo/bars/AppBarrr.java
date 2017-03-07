@@ -483,7 +483,7 @@ public class AppBarrr extends AppBarLayout {
      * the expanded layout
      * @return Boolean of the state to hide when the user touches outside
      */
-    public boolean isHidingWhenTouchOutside() {
+    public boolean isHiddenWhenTouchOutside() {
         return this.mHideWhenTouchOutside;
     }
 
@@ -637,7 +637,7 @@ public class AppBarrr extends AppBarLayout {
         // hide other nested views
         if (mMaskView != null) {
             mMaskView.setVisibility(View.VISIBLE);
-            if (isHidingWhenTouchOutside()) {
+            if (isHiddenWhenTouchOutside()) {
                 mMaskView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -655,7 +655,7 @@ public class AppBarrr extends AppBarLayout {
         // show other nested views
         if (mMaskView != null) {
             mMaskView.setVisibility(View.GONE);
-            if (isHidingWhenTouchOutside()) {
+            if (isHiddenWhenTouchOutside()) {
                 mMaskView.setOnClickListener(null);
             }
         }
@@ -946,6 +946,9 @@ public class AppBarrr extends AppBarLayout {
 
     @Override
     public void onDetachedFromWindow() {
+        // listener
+        mCloseIcon.setOnClickListener(null);
+        // views
         activity = null;
         mContainer = null;
         mExpandLayout = null;
@@ -953,13 +956,12 @@ public class AppBarrr extends AppBarLayout {
         mMaskView = null;
         mCloseIcon = null;
         mUpIcon = null;
+        // ints
         APPBAR_START_HEIGHT = 0;
         TOOLBAR_START_HEIGHT = 0;
         mExpandMaxSize = 0;
         mExpandDuration = 0;
         mCollapseDuration = 0;
-        mHideWhenTouchOutside = false;
-        mIsExpanded = false;
         super.onDetachedFromWindow();
     }
 }
