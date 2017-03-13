@@ -1,6 +1,8 @@
 AppBarrr
 =======
 
+<img src="https://github.com/Gitdefllo/AppBarrr/blob/master/app/docs/ic_appbarrr.png" /> 
+
 A widget which uses the CollapsingToolbarLayout pattern and displays a custom expanded scrollable layout in AppBarLayout
 
 <table>
